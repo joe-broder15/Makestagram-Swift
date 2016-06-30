@@ -28,6 +28,7 @@ class TimelineViewController: UIViewController {
     func takePhoto() {
         photoTakingHelper = PhotoTakingHelper(viewController: self.tabBarController!) { (image: UIImage?) in
             // don't do anything, yet..., this will trigger the source slection
+            print("received a callback")
         }
     }
     
