@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Parse
+
 
 class TimelineViewController: UIViewController {
     
@@ -25,10 +27,22 @@ class TimelineViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    //this function is where we get the photo
     func takePhoto() {
+        //at the init of this object it will go through the whole image selector shpeil
         photoTakingHelper = PhotoTakingHelper(viewController: self.tabBarController!) { (image: UIImage?) in
-            // don't do anything, yet..., this will trigger the source slection
-            print("received a callback")
+            if let image = image {
+                //create an image file object with the image we selected as the data
+                let imageData = UIImageJPEGRepresentation(image, 0.8)!
+                let imageFile = PFFile(name: "image.jpg", data: imageData)!
+                
+                //create a new post that will go to the server with the image file
+                let post = PFObject(className: "Post")
+                post["imageFile"] = imageFile
+                
+                //save the file to the server
+                post.saveInBackground()
+            }
         }
     }
     
@@ -49,7 +63,6 @@ class TimelineViewController: UIViewController {
 extension TimelineViewController: UITabBarControllerDelegate {
     func tabBarController(tabBarController: UITabBarController, shouldSelectViewController viewController: UIViewController) -> Bool {
         if (viewController is PhotoViewController) {
-            print("Take Photo")
             takePhoto()
             return false
         } else {
