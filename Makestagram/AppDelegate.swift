@@ -45,6 +45,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             print("no user logged in")
         }
+        
+        //every new parse object has a default public read access
+        let acl = PFACL()
+        acl.publicReadAccess = true
+        PFACL.setDefaultACL(acl, withAccessForCurrentUser: true)
 
         return true
     }
