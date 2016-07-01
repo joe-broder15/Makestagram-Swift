@@ -31,18 +31,9 @@ class TimelineViewController: UIViewController {
     func takePhoto() {
         //at the init of this object it will go through the whole image selector shpeil
         photoTakingHelper = PhotoTakingHelper(viewController: self.tabBarController!) { (image: UIImage?) in
-            if let image = image {
-                //create an image file object with the image we selected as the data
-                let imageData = UIImageJPEGRepresentation(image, 0.8)!
-                let imageFile = PFFile(name: "image.jpg", data: imageData)!
-                
-                //create a new post that will go to the server with the image file
-                let post = PFObject(className: "Post")
-                post["imageFile"] = imageFile
-                
-                //save the file to the server
-                post.saveInBackground()
-            }
+        let post = Post()
+        post.image = image
+        post.uploadPost()
         }
     }
     
