@@ -106,3 +106,30 @@ extension TimelineViewController: UITabBarControllerDelegate {
         }
     }
 }
+
+extension TimelineViewController: UITableViewDataSource {
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        // give the tableview as many rows as we have posts
+        return posts.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
+        
+        // return a placeholder cell with text "post"
+        let cell = tableView.dequeueReusableCellWithIdentifier("PostCell")!
+        
+        cell.textLabel!.text = "Post"
+        
+        return cell
+    }
+}
+
+
+
+
+
+
+
+
