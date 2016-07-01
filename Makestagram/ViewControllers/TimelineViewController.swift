@@ -59,6 +59,19 @@ class TimelineViewController: UIViewController {
             //here we recieve all posts that meet the rerequirement
             self.posts = result as? [Post] ?? []
             
+            //as we loop through posts, download post images so we can display them
+            for post in self.posts {
+                do {
+                    //this actually downloads the file (getData)
+                    let data = try post.imageFile?.getData()
+                    //Turn the downloaded file from nsdata to UIImage
+                    //then store it as a property of post
+                    post.image =  UIImage(data: data!, scale: 1.0)
+                } catch {
+                    print("could not get images")
+                }
+            }
+            
             //here we reload the data of the tableview
             self.tableView.reloadData()
             
@@ -117,10 +130,11 @@ extension TimelineViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
         
-        // return a placeholder cell with text "post"
-        let cell = tableView.dequeueReusableCellWithIdentifier("PostCell")!
+        // return a cell with type PostTableViewCell"
+        let cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as! PostTableViewCell
         
-        cell.textLabel!.text = "Post"
+        // let the image be the image of the post at the index path
+        cell.postImageView.image = posts[indexPath.row].image
         
         return cell
     }
