@@ -13,6 +13,7 @@
 		5817B1431D24846900C6FF55 /* PhotoTakingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5817B1421D24846900C6FF55 /* PhotoTakingHelper.swift */; };
 		5817B1461D25D41F00C6FF55 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5817B1451D25D41F00C6FF55 /* Post.swift */; };
 		5817B14A1D26EC0500C6FF55 /* PostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5817B1491D26EC0500C6FF55 /* PostTableViewCell.swift */; };
+		5817B14C1D27014B00C6FF55 /* ParseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5817B14B1D27014B00C6FF55 /* ParseHelper.swift */; };
 		62551B961B06C2F5000913E4 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62551B951B06C2F5000913E4 /* Social.framework */; };
 		62551B981B06C2FD000913E4 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62551B971B06C2FD000913E4 /* Accounts.framework */; };
 		62551B9A1B06C31F000913E4 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62551B991B06C31F000913E4 /* CoreLocation.framework */; };
@@ -72,6 +73,7 @@
 		5817B1421D24846900C6FF55 /* PhotoTakingHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoTakingHelper.swift; sourceTree = "<group>"; };
 		5817B1451D25D41F00C6FF55 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		5817B1491D26EC0500C6FF55 /* PostTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
+		5817B14B1D27014B00C6FF55 /* ParseHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseHelper.swift; sourceTree = "<group>"; };
 		62551B951B06C2F5000913E4 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		62551B971B06C2FD000913E4 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		62551B991B06C31F000913E4 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -226,6 +228,7 @@
 			children = (
 				6277189D1B0A58E800AF5C6E /* ErrorHandling.swift */,
 				6277189E1B0A58E800AF5C6E /* ParseLoginHelper.swift */,
+				5817B14B1D27014B00C6FF55 /* ParseHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -523,6 +526,7 @@
 				5817B13E1D24677000C6FF55 /* PhotoViewController.swift in Sources */,
 				62C8C1E61B06BD6500DC3EA7 /* AppDelegate.swift in Sources */,
 				627718971B0A581700AF5C6E /* FilterViewController.swift in Sources */,
+				5817B14C1D27014B00C6FF55 /* ParseHelper.swift in Sources */,
 				5817B14A1D26EC0500C6FF55 /* PostTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

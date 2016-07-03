@@ -32,45 +32,11 @@ class TimelineViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        //Create a qurey that gets the follows of a current user
-        let followingQuery = PFQuery(className: "Follow")
-        followingQuery.whereKey("user", equalTo: PFUser.currentUser()!)
-        
-        //Get posts from users that the current user is following
-        let postsFromFollowedUsers = Post.query()
-        postsFromFollowedUsers!.whereKey("user", matchesKey: "toUser", inQuery: followingQuery)
-        
-        //Get all posts that the current user has uploaded
-        let postsFromThisUser = Post.query()
-        postsFromThisUser!.whereKey("user", equalTo: PFUser.currentUser()!)
-        
-        //Create a combined query of both user and follow posts (orQueryWithSubQueries)
-        let query = PFQuery.orQueryWithSubqueries([postsFromFollowedUsers!, postsFromThisUser!])
-        
-        //The combined query should get the PFUser that is tied to each post
-        query.includeKey("user")
-        
-        //This orders posts in chronological order
-        query.orderByAscending("createdAt")
-        
         //Start the network request to actually fetch the items int he query
-        query.findObjectsInBackgroundWithBlock {(result: [PFObject]?, error: NSError? ) -> Void in
+        ParseHelper.timeLineRequestForCurrentUser{(result: [PFObject]?, error: NSError?) -> Void in
             
             //here we recieve all posts that meet the rerequirement
             self.posts = result as? [Post] ?? []
-            
-            //as we loop through posts, download post images so we can display them
-            for post in self.posts {
-                do {
-                    //this actually downloads the file (getData)
-                    let data = try post.imageFile?.getData()
-                    //Turn the downloaded file from nsdata to UIImage
-                    //then store it as a property of post
-                    post.image =  UIImage(data: data!, scale: 1.0)
-                } catch {
-                    print("could not get images")
-                }
-            }
             
             //here we reload the data of the tableview
             self.tableView.reloadData()
@@ -87,11 +53,12 @@ class TimelineViewController: UIViewController {
     
     //this function is where we get the photo
     func takePhoto() {
-        //at the init of this object it will go through the whole image selector shpeil
+        // instantiate photo taking class, provide callback for when photo is selected
         photoTakingHelper = PhotoTakingHelper(viewController: self.tabBarController!) { (image: UIImage?) in
-        let post = Post()
-        post.image = image
-        post.uploadPost()
+            let post = Post()
+            // store the image using the new obervable way
+            post.image.value = image!
+            post.uploadPost()
         }
     }
     
@@ -133,8 +100,13 @@ extension TimelineViewController: UITableViewDataSource {
         // return a cell with type PostTableViewCell"
         let cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as! PostTableViewCell
         
-        // let the image be the image of the post at the index path
-        cell.postImageView.image = posts[indexPath.row].image
+        let post = posts[indexPath.row]
+        
+        //right before a post is displayed, download it
+        post.downloadImage()
+        
+        //assign the downloaded post to the cell's post property
+        cell.post = post
         
         return cell
     }
