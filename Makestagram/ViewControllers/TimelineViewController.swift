@@ -105,6 +105,9 @@ extension TimelineViewController: UITableViewDataSource {
         //right before a post is displayed, download it
         post.downloadImage()
         
+        //get the likes for a post
+        post.fetchLikes()
+        
         //assign the downloaded post to the cell's post property
         cell.post = post
         

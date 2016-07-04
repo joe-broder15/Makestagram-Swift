@@ -14,6 +14,7 @@ import Bond
 class Post: PFObject, PFSubclassing {
     var image: Observable<UIImage?> = Observable(nil)
     var photoUploadTask: UIBackgroundTaskIdentifier?
+    var likes: Observable<[PFUser]?> = Observable(nil)
     
     //this declares the propertes
     //@NSManages means do not handle it in the initializer beacuse parse will handle it
@@ -77,4 +78,57 @@ class Post: PFObject, PFSubclassing {
             }
         }
     }
+    
+    
+    func fetchLikes() {
+        // if we already have a stored like value, return nill
+        if (likes.value != nil) {
+            return
+        }
+        
+        // fetch the likes for the current post using likesForPost
+        ParseHelper.likesForPost(self, completionBlock: { (likes: [PFObject]?, error: NSError?) -> Void in
+            // filter returns only items from the original array that meet the requirements in the closure
+            //filter our likes from users that no longer exist
+            let validLikes = likes?.filter { like in like[ParseHelper.ParseLikeFromUser] != nil }
+            
+            // map does the same thing as filter, but replaces instead of deletes
+            //we now replace all the likes in the array with the users who gave the like
+            self.likes.value = validLikes?.map { like in
+                let fromUser = like[ParseHelper.ParseLikeFromUser] as! PFUser
+                
+                return fromUser
+            }
+        })
+    }
+    
+    //checks to see if the user has liked a post
+    //takes one argument and returns a bool
+    func doesUserLikePost(user: PFUser) -> Bool {
+        //unwrap the potional likes.value
+        if let likes = likes.value {
+            //if the likes array contains the user, return so and vice versa
+            return likes.contains(user)
+        } else {
+            return false
+        }
+    }
+    
+    //handles toggling post likes
+    //takes one argument a user
+    func toggleLikePost(user: PFUser) {
+        if (doesUserLikePost(user)) {
+            // if post is liked, unlike it now
+            // take the current user out of the like array
+            likes.value = likes.value?.filter { $0 != user }
+            ParseHelper.unlikePost(user, post: self)
+        } else {
+            // if this post is not liked yet, like it now
+            //append the user to the likes array
+            likes.value?.append(user)
+            ParseHelper.likePost(user, post: self)
+        }
+    }
+        
+
 }

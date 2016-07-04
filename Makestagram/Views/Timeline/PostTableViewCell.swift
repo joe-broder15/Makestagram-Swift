@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Bond
+import Parse
 
 class PostTableViewCell: UITableViewCell {
     //declares all the parts of the cell
@@ -33,6 +34,7 @@ class PostTableViewCell: UITableViewCell {
     }
     
     @IBAction func likeButtonTapped(sender: UIButton) {
+        post?.toggleLikePost(PFUser.currentUser()!)
     }
     
 }
