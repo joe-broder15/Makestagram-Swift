@@ -33,7 +33,7 @@ class ParseHelper {
     // User Relation
     static let ParseUserUsername      = "username"
     
-    static func timeLineRequestForCurrentUser(completionBlock: PFQueryArrayResultBlock) {
+    static func timeLineRequestForCurrentUser(range: Range<Int>, completionBlock: PFQueryArrayResultBlock) {
         
         
         //Create a qurey that gets the follows of a current user
@@ -53,6 +53,14 @@ class ParseHelper {
         query.includeKey(ParsePostUser)
         //This orders posts in chronological order
         query.orderByDescending(ParsePostCreatedAt)
+        
+        // defines how many of our items should be skipped (our startIndex)
+        query.skip = range.startIndex
+        
+        // limit defines how many we want to load (end index - start)
+        query.limit = range.endIndex - range.startIndex
+
+        
         //Start the network request to actually fetch the items int he query
         query.findObjectsInBackgroundWithBlock(completionBlock)
     }

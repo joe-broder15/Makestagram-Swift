@@ -8,13 +8,21 @@
 
 import UIKit
 import Parse
+import ConvenienceKit
 
 
-class TimelineViewController: UIViewController {
+class TimelineViewController: UIViewController, TimelineComponentTarget {
     
     var posts: [Post] = []
     
     var photoTakingHelper = PhotoTakingHelper?()
+    
+    //initializes timeline component
+    var timelineComponent: TimelineComponent<Post, TimelineViewController>!
+    
+    //for scrolling
+    let defaultRange = 0...4
+    let additionalRangeSize = 5
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -26,24 +34,25 @@ class TimelineViewController: UIViewController {
         // Do any additional setup after loading the view.
         //Here we set the current view controller to be a delegate of the tab bar controller
         self.tabBarController?.delegate = self
+        //instantiate timelineComponent
+        timelineComponent = TimelineComponent(target: self)
     }
     
-    //Loads the querys for the timeline
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        //Start the network request to actually fetch the items int he query
-        ParseHelper.timeLineRequestForCurrentUser{(result: [PFObject]?, error: NSError?) -> Void in
-            
-            //here we recieve all posts that meet the rerequirement
-            self.posts = result as? [Post] ?? []
-            
-            //here we reload the data of the tableview
-            self.tableView.reloadData()
-            
-            
-        }
+        timelineComponent.loadInitialIfRequired()
         
+    }
+    
+    func loadInRange(range: Range<Int>, completionBlock: ([Post]?) -> Void) {
+        // 1
+        ParseHelper.timeLineRequestForCurrentUser(range) { (result: [PFObject]?, error: NSError?) -> Void in
+            // 2
+            let posts = result as? [Post] ?? []
+            // 3
+            completionBlock(posts)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -73,6 +82,17 @@ class TimelineViewController: UIViewController {
     */
 
 }
+
+//this is called every time a new cell is displayed
+extension TimelineViewController: UITableViewDelegate {
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        timelineComponent.targetWillDisplayEntry(indexPath.row)
+    }
+    
+}
+
 //This modifies the behavior of the tab bar
 //we return a boolean value, if the value is true, we will not display the normal view controller, false will
 //generally just behave differently if we want PhotoViewController
@@ -91,8 +111,7 @@ extension TimelineViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        // give the tableview as many rows as we have posts
-        return posts.count
+        return timelineComponent.content.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
@@ -100,7 +119,7 @@ extension TimelineViewController: UITableViewDataSource {
         // return a cell with type PostTableViewCell"
         let cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as! PostTableViewCell
         
-        let post = posts[indexPath.row]
+        let post = timelineComponent.content[indexPath.row]
         
         //right before a post is displayed, download it
         post.downloadImage()
